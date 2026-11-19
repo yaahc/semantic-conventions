@@ -30,6 +30,27 @@ groups:
           > [!WARNING]
           >
           > This attribute may contain sensitive information.
+      - id: exception.cause.messages
+        type: string[]
+        stability: development
+        brief: >
+          The messages of the exception's chain of causes, ordered from the
+          direct cause to the root cause.
+        examples:
+          - ["Connection refused"]
+          - ["config file is unreadable", "No such file or directory (os error 2)"]
+        note: |
+          The first element is the message of the direct cause of the exception
+          described by `exception.message`, and each following element is the
+          message of the cause of the element before it. Examples of a cause
+          include Java's `Throwable.getCause()`, JavaScript's `Error.cause`,
+          .NET's `Exception.InnerException` and Rust's `Error::source()`.
+
+          This attribute SHOULD NOT be set when the exception has no cause.
+
+          > [!WARNING]
+          >
+          > This attribute may contain sensitive information.
       - id: exception.stacktrace
         type: string
         stability: stable

@@ -14,4 +14,6 @@ attribute_groups:
       - ref: exception.message
         requirement_level:
           conditionally_required: Required if `exception.type` is not set, recommended otherwise.
+      - ref: exception.cause.messages
+        requirement_level: opt_in
       - ref: exception.stacktrace
