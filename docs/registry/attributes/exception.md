@@ -14,17 +14,30 @@ This document defines the shared attributes used to report a single exception as
 
 | Key | Stability | Value Type | Description | Example Values |
 | --- | --- | --- | --- | --- |
-| <a id="exception-message" href="#exception-message">`exception.message`</a> | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | string | The exception message. [1] | `Division by zero`; `Can't convert 'int' object to str implicitly` |
+| <a id="exception-cause-messages" href="#exception-cause-messages">`exception.cause.messages`</a> | ![Development](https://img.shields.io/badge/-development-blue) | string[] | The messages of the exception's chain of causes, ordered from the direct cause to the root cause. [1] | `["Connection refused"]`; `["config file is unreadable", "No such file or directory (os error 2)"]` |
+| <a id="exception-message" href="#exception-message">`exception.message`</a> | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | string | The exception message. [2] | `Division by zero`; `Can't convert 'int' object to str implicitly` |
 | <a id="exception-stacktrace" href="#exception-stacktrace">`exception.stacktrace`</a> | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | string | A stacktrace as a string in the natural representation for the language runtime. The representation is to be determined and documented by each language SIG. | `Exception in thread "main" java.lang.RuntimeException: Test exception\n at com.example.GenerateTrace.methodB(GenerateTrace.java:13)\n at com.example.GenerateTrace.methodA(GenerateTrace.java:9)\n at com.example.GenerateTrace.main(GenerateTrace.java:5)` |
-| <a id="exception-type" href="#exception-type">`exception.type`</a> | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | string | The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it. [2] | `java.net.ConnectException`; `OSError` |
+| <a id="exception-type" href="#exception-type">`exception.type`</a> | ![Stable](https://img.shields.io/badge/-stable-lightgreen) | string | The type of the exception (its fully-qualified class name, if applicable). The dynamic type of the exception should be preferred over the static type in languages that support it. [3] | `java.net.ConnectException`; `OSError` |
 
-**[1] `exception.message`:**
+**[1] `exception.cause.messages`:** The first element is the message of the direct cause of the exception
+described by `exception.message`, and each following element is the
+message of the cause of the element before it. Examples of a cause
+include Java's `Throwable.getCause()`, JavaScript's `Error.cause`,
+.NET's `Exception.InnerException` and Rust's `Error::source()`.
+
+This attribute SHOULD NOT be set when the exception has no cause.
 
 > [!WARNING]
 >
 > This attribute may contain sensitive information.
 
-**[2] `exception.type`:** If the recorded exception type is a wrapper that is not meaningful for
+**[2] `exception.message`:**
+
+> [!WARNING]
+>
+> This attribute may contain sensitive information.
+
+**[3] `exception.type`:** If the recorded exception type is a wrapper that is not meaningful for
 failure classification, instrumentation MAY use the type of the inner
 exception instead. For example, in Go, errors created with `fmt.Errorf`
 using `%w` MAY be unwrapped when the wrapper type does not help
